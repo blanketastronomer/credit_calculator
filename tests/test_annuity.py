@@ -18,3 +18,14 @@ def test_annuity(calculator):
     calculator.calculate(args)
 
     assert calculator.arguments.type == 'annuity'
+
+
+def test_calculate_annuity_payment(calculator):
+    args = [
+        '--type', 'annuity',
+        '--principal', '1000000',
+        '--periods', '60',
+        '--interest', '10'
+    ]
+
+    assert calculator.calculate(args) == "Your annuity payment = 21248!\nOverpayment = 274880"
