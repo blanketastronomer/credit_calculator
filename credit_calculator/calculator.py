@@ -38,11 +38,18 @@ class Calculator(object):
             principal = self.arguments.principal
             interest = self.arguments.interest
             pay_periods = self.arguments.periods
+            payment = self.arguments.payment
 
             if value_missing(interest):
                 pass
             else:
-                return self.annuity_payment(principal, pay_periods, interest)
+                if value_missing(pay_periods):
+                    pass
+                else:
+                    if value_missing(principal):
+                        return self.annuity_principal(payment, pay_periods, interest)
+                    else:
+                        return self.annuity_payment(principal, pay_periods, interest)
         else:
             pass
 
@@ -65,6 +72,29 @@ class Calculator(object):
         payment = ceil(principal * (numerator / denominator))
         overpayment = (payment * timeframe) - principal
         output = f"Your annuity payment = {payment}!"
+
+        if overpayment > 0:
+            output += f"\nOverpayment = {overpayment}"
+
+        return output
+
+    def annuity_principal(self, payment: int, timeframe: int, interest_rate: float) -> str:
+        """
+        Calculate the principal on an annuity-style payment loan with overpayment amount if overpaid.
+
+        :param payment: Single, annuity payment (since it won't change)
+        :param timeframe: Pay periods, usually the amount of time to pay the loan off in months
+        :param interest_rate: Interest rate specified as a percentage, e.g. 12% is 12, 0.9 is 0.9
+        :return: String showing the principal and overpayment, if overpaid
+        """
+        i = self._interest_rate(interest_rate)
+        power = pow(1 + i, timeframe)
+        numerator = i * power
+        denominator = power - 1
+        principal = round(payment / (numerator / denominator))
+        overpayment = (payment * timeframe) - principal
+
+        output = f"Your credit principal = {principal}!"
 
         if overpayment > 0:
             output += f"\nOverpayment = {overpayment}"
