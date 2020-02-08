@@ -115,8 +115,7 @@ class Calculator(object):
         inner_function = payment / (payment - interest * principal)
         pay_periods = ceil(log(inner_function, 1 + interest))
 
-        years = pay_periods // 12
-        months = pay_periods % 12
+        years, months = divmod(pay_periods, 12)
         overpayment = (payment * pay_periods) - principal
 
         def pluralize(singular: str, plural: str, number: int):
