@@ -1,4 +1,5 @@
 from math import ceil
+from math import log
 from math import pow
 from typing import List
 
@@ -44,7 +45,7 @@ class Calculator(object):
                 pass
             else:
                 if value_missing(pay_periods):
-                    pass
+                    return self.annuity_timeframe(principal, payment, interest)
                 else:
                     if value_missing(principal):
                         return self.annuity_principal(payment, pay_periods, interest)
@@ -84,7 +85,7 @@ class Calculator(object):
 
         :param payment: Single, annuity payment (since it won't change)
         :param timeframe: Pay periods, usually the amount of time to pay the loan off in months
-        :param interest_rate: Interest rate specified as a percentage, e.g. 12% is 12, 0.9 is 0.9
+        :param interest_rate: Interest rate specified as a percentage, e.g. 12% is 12, 0.9% is 0.9
         :return: String showing the principal and overpayment, if overpaid
         """
         i = self._interest_rate(interest_rate)
@@ -95,6 +96,49 @@ class Calculator(object):
         overpayment = (payment * timeframe) - principal
 
         output = f"Your credit principal = {principal}!"
+
+        if overpayment > 0:
+            output += f"\nOverpayment = {overpayment}"
+
+        return output
+
+    def annuity_timeframe(self, principal: int, payment: int, interest_rate: float):
+        """
+        Calculate the amount of time that it will take to pay off the loan, with overpayment.
+
+        :param principal: Loan principal
+        :param payment: Single, annuity payment (since it won't change)
+        :param interest_rate: Interest rate specified as a percentage, e.g. 12% is 12, 0.9% is 0.9
+        :return: String showing timeframe in months and years as well as any overpayment if overpaid
+        """
+        interest = self._interest_rate(interest_rate)
+        inner_function = payment / (payment - interest * principal)
+        pay_periods = ceil(log(inner_function, 1 + interest))
+
+        years = pay_periods // 12
+        months = pay_periods % 12
+        overpayment = (payment * pay_periods) - principal
+
+        def pluralize(singular: str, plural: str, number: int):
+            if abs(number) == 1:
+                return singular
+            else:
+                return plural
+
+        output = "You need "
+        year_string = pluralize('year', 'years', years)
+        month_string = pluralize('month', 'months', months)
+
+        if years > 0:
+            output += f"{years} {year_string} "
+
+        if months > 0 and years > 0:
+            output += "and "
+
+        if months > 0:
+            output += f"{months} {month_string} "
+
+        output += "to repay this credit!"
 
         if overpayment > 0:
             output += f"\nOverpayment = {overpayment}"

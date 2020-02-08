@@ -30,6 +30,7 @@ def test_calculate_annuity_payment(calculator):
 
     assert calculator.calculate(args) == "Your annuity payment = 21248!\nOverpayment = 274880"
 
+
 def test_calculate_annuity_principal(calculator):
     args = [
         '--type', 'annuity',
@@ -39,3 +40,36 @@ def test_calculate_annuity_principal(calculator):
     ]
 
     assert calculator.calculate(args) == "Your credit principal = 800019!\nOverpayment = 246621"
+
+
+def test_calculate_annuity_timeframe_in_years(calculator):
+    args = [
+        '--type', 'annuity',
+        '--principal', '500000',
+        '--payment', '23000',
+        '--interest', '7.8'
+    ]
+
+    assert calculator.calculate(args) == "You need 2 years to repay this credit!\nOverpayment = 52000"
+
+
+def test_calculate_annuity_timeframe_in_months(calculator):
+    args = [
+        '--type', 'annuity',
+        '--principal', '50000',
+        '--payment', '22000',
+        '--interest', '7.8'
+    ]
+
+    assert calculator.calculate(args) == "You need 3 months to repay this credit!\nOverpayment = 16000"
+
+
+def test_calculate_annuity_timeframe_in_years_and_months(calculator):
+    args = [
+        '--type', 'annuity',
+        '--principal', '500000',
+        '--payment', '22000',
+        '--interest', '7.8'
+    ]
+
+    assert calculator.calculate(args) == "You need 2 years and 1 month to repay this credit!\nOverpayment = 50000"
