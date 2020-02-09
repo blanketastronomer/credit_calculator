@@ -1,0 +1,10 @@
+Month 1: paid out 65750
+Month 2: paid out 65344
+Month 3: paid out 64938
+Month 4: paid out 64532
+Month 5: paid out 64125
+Month 6: paid out 63719
+Month 7: paid out 63313
+Month 8: paid out 62907
+
+Overpayment = 14628

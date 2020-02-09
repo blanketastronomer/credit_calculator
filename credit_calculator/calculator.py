@@ -44,13 +44,19 @@ class Calculator(object):
             if value_missing(interest):
                 pass
             else:
-                if value_missing(pay_periods):
-                    return self.annuity_timeframe(principal, payment, interest)
-                else:
-                    if value_missing(principal):
-                        return self.annuity_principal(payment, pay_periods, interest)
+                if calculation_type == 'annuity':
+                    if value_missing(pay_periods):
+                        return self.annuity_timeframe(principal, payment, interest)
                     else:
-                        return self.annuity_payment(principal, pay_periods, interest)
+                        if value_missing(principal):
+                            return self.annuity_principal(payment, pay_periods, interest)
+                        else:
+                            return self.annuity_payment(principal, pay_periods, interest)
+                elif calculation_type == 'diff':
+                    if not value_missing(principal) and not value_missing(pay_periods):
+                        return self.differentiate_payment(principal, pay_periods, interest)
+                    else:
+                        pass
         else:
             pass
 
@@ -138,6 +144,41 @@ class Calculator(object):
             output += f"{months} {month_string} "
 
         output += "to repay this credit!"
+
+        if overpayment > 0:
+            output += f"\nOverpayment = {overpayment}"
+
+        return output
+
+    def differentiate_payment(self, principal: int, timeframe: int, interest_rate: float) -> str:
+        """
+        Calculate all future loan payments.
+
+        In a differentiate payment structure, each pay period has a different payment amount.
+
+        An overpayment amount will also be included if the loan will be overpaid.
+
+        :param principal: Loan principal
+        :param timeframe: Pay periods, usually the amount of time to pay the loan off in months
+        :param interest_rate: Interest rate specified as a percentage, e.g. 12% is 12, 0.9% is 0.9
+        :return: String showing the payments and overpayment, if overpaid
+        """
+        m = 1
+        balance = principal
+        paid = 0
+        output = ""
+
+        while balance > 0:
+            interest = self._interest_rate(interest_rate)
+            formula = (principal / timeframe) + interest * (principal - (principal * (m - 1) / timeframe))
+
+            payment = ceil(formula)
+            output += f"Month {m}: paid out {payment}\n"
+            balance -= payment
+            paid += payment
+            m += 1
+
+        overpayment = paid - principal
 
         if overpayment > 0:
             output += f"\nOverpayment = {overpayment}"
