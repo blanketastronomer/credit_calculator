@@ -6,6 +6,8 @@ from typing import List
 from credit_calculator.argument_parser import ArgumentParser
 from credit_calculator.helpers.value_helper import value_missing
 
+ERR_INCORRECT_PARAMETERS = "Incorrect parameters"
+
 
 class Calculator(object):
     def __init__(self):
@@ -40,6 +42,10 @@ class Calculator(object):
             interest = self.arguments.interest
             pay_periods = self.arguments.periods
             payment = self.arguments.payment
+
+            # Error out if no calculation type is specified
+            if value_missing(calculation_type):
+                return ERR_INCORRECT_PARAMETERS
 
             if value_missing(interest):
                 pass
