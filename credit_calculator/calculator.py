@@ -48,9 +48,16 @@ class Calculator(object):
             if value_missing(calculation_type):
                 return ERR_INCORRECT_PARAMETERS
 
-            for arg in [calculation_type, principal, interest, pay_periods, payment]:
+            argument_values = [calculation_type, principal, interest, pay_periods, payment]
+            # Count number of user-supplied arguments
+            for arg in argument_values:
                 if not value_missing(arg):
                     argc += 1
+
+            # Ensure numeric arguments are all positive
+            for arg in argument_values[1:]:
+                if not value_missing(arg) and arg < 0:
+                    return ERR_INCORRECT_PARAMETERS
 
             if argc < 4:
                 return ERR_INCORRECT_PARAMETERS
