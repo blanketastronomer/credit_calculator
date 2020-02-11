@@ -22,3 +22,13 @@ def test_type_not_specified(calculator):
     ]
 
     error_matches(calculator.calculate(args))
+
+
+def test_less_than_four_arguments(calculator):
+    args = [
+        '--type', 'diff',
+        '--principal', '1000000',
+        '--interest', '10'
+    ]
+
+    error_matches(calculator.calculate(args))

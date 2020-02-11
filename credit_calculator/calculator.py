@@ -42,9 +42,17 @@ class Calculator(object):
             interest = self.arguments.interest
             pay_periods = self.arguments.periods
             payment = self.arguments.payment
+            argc = 0
 
             # Error out if no calculation type is specified
             if value_missing(calculation_type):
+                return ERR_INCORRECT_PARAMETERS
+
+            for arg in [calculation_type, principal, interest, pay_periods, payment]:
+                if not value_missing(arg):
+                    argc += 1
+
+            if argc < 4:
                 return ERR_INCORRECT_PARAMETERS
 
             if value_missing(interest):
