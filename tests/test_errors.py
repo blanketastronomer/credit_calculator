@@ -71,3 +71,14 @@ def test_some_arguments_cannot_be_negative():
         switch_argument_sign(args, i)
         error_matches(calculator.calculate(args))
         switch_argument_sign(args, i)
+
+
+def test_cannot_calculate_interest(calculator):
+    args = [
+        '--type', 'annuity',
+        '--principal', '100000',
+        '--payment', '10400',
+        '--periods', '10'
+    ]
+
+    error_matches(calculator.calculate(args))

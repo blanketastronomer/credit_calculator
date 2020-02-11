@@ -63,7 +63,7 @@ class Calculator(object):
                 return ERR_INCORRECT_PARAMETERS
 
             if value_missing(interest):
-                pass
+                return ERR_INCORRECT_PARAMETERS
             else:
                 if calculation_type == 'annuity':
                     if value_missing(pay_periods):
