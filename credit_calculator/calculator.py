@@ -59,6 +59,16 @@ class Calculator(object):
                 if not value_missing(arg) and arg < 0:
                     return ERR_INCORRECT_PARAMETERS
 
+            # One value MUST be missing to calculate anything
+            existing_values = set()
+
+            for arg in argument_values:
+                existing_values.add(value_missing(arg))
+
+            if existing_values == {False}:
+                return ERR_INCORRECT_PARAMETERS
+
+            # Not enough parameters have been provided
             if argc < 4:
                 return ERR_INCORRECT_PARAMETERS
 
@@ -77,7 +87,7 @@ class Calculator(object):
                     if not value_missing(principal) and not value_missing(pay_periods):
                         return self.differentiate_payment(principal, pay_periods, interest)
                     else:
-                        pass
+                        return ERR_INCORRECT_PARAMETERS
         else:
             pass
 

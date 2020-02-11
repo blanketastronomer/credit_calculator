@@ -82,3 +82,26 @@ def test_cannot_calculate_interest(calculator):
     ]
 
     error_matches(calculator.calculate(args))
+
+
+def test_conflicting_options(calculator):
+    args = [
+        '--type', 'diff',
+        '--principal', '1000000',
+        '--interest', '10',
+        '--payment', '100000'
+    ]
+
+    error_matches(calculator.calculate(args))
+
+
+def test_all_options_specified_are_conflicting(calculator):
+    args = [
+        '--type', 'annuity',
+        '--principal', '1000000',
+        '--periods', '10',
+        '--interest', '10',
+        '--payment', '2500'
+    ]
+
+    error_matches(calculator.calculate(args))
