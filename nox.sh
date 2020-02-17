@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-nox
+nox --noxfile `dirname "$0"`/noxfile.py
