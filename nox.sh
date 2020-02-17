@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-nox --noxfile `dirname "$0"`/noxfile.py
+nox --no-reuse-existing-virtualenvs --noxfile "$(dirname "$0")/noxfile.py" --non-interactive
