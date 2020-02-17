@@ -30,12 +30,15 @@ def run_and_save(name: str, commands, session):
             c = command.rstrip().split(' ')
             session.run(*c)
 
-    joined = ''.join(commands)
-    ga.add_step(
-        name,
-        joined
-    )
-    ga.save(NOX_WORKFLOW)
+    interactive_session = session.interactive
+
+    if interactive_session:
+        joined = ''.join(commands)
+        ga.add_step(
+            name,
+            joined
+        )
+        ga.save(NOX_WORKFLOW)
 
 
 @nox.session()
