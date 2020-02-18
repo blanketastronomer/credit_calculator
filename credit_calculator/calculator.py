@@ -4,6 +4,10 @@ from math import pow
 from typing import List
 
 from credit_calculator.argument_parser import ArgumentParser
+from credit_calculator.errors.missing_parameter_error import MissingParameterError
+from credit_calculator.errors.negative_parameter_error import NegativeValueError
+from credit_calculator.errors.too_many_values_error import TooManyValuesError
+from credit_calculator.errors.value_missing_error import ValueMissingError
 from credit_calculator.helpers.value_helper import value_missing
 
 ERR_INCORRECT_PARAMETERS = "Incorrect parameters"
@@ -26,6 +30,52 @@ class Calculator(object):
         """
         return (rate / 12) / 100
 
+    def _check_arguments(self, args: List[str]) -> list:
+        """
+        Check if arguments are valid.
+
+        :param args: List of arguments to check.
+        :return: List of arguments
+        """
+        self.arguments = self.argument_parser.parse_args(args)
+        calculation_type = self.arguments.type
+        principal = self.arguments.principal
+        interest = self.arguments.interest
+        pay_periods = self.arguments.periods
+        payment = self.arguments.payment
+        argc = 0
+
+        string_arguments = [calculation_type]
+        numeric_arguments = [principal, interest, pay_periods, payment]
+        all_arguments = string_arguments + numeric_arguments
+
+        # One value MUST be missing to calculate anything
+        existing_values = set()
+
+        for arg in all_arguments:
+            missing = value_missing(arg)
+
+            if not missing:
+                argc += 1
+
+            existing_values.add(missing)
+
+        if existing_values == {False}:
+            raise TooManyValuesError
+
+        if argc < 4:
+            raise ValueMissingError
+
+        # Check if numeric arguments are negative
+        for arg in numeric_arguments:
+            if not value_missing(arg) and arg < 0:
+                raise NegativeValueError
+
+        if value_missing(calculation_type) or value_missing(interest):
+            raise MissingParameterError
+
+        return [calculation_type, principal, interest, pay_periods, payment]
+
     def calculate(self, args: List[str]) -> str:
         """
         Calculate a missing parameter for a loan given the other parameters and their values.
@@ -35,46 +85,9 @@ class Calculator(object):
         :return: String with the calculated missing value or an error message.
         """
         if args:
-            # Commandline arguments have been passed.
-            self.arguments = self.argument_parser.parse_args(args)
-            calculation_type = self.arguments.type
-            principal = self.arguments.principal
-            interest = self.arguments.interest
-            pay_periods = self.arguments.periods
-            payment = self.arguments.payment
-            argc = 0
+            try:
+                calculation_type, principal, interest, pay_periods, payment = self._check_arguments(args)
 
-            # Error out if no calculation type is specified
-            if value_missing(calculation_type):
-                return ERR_INCORRECT_PARAMETERS
-
-            argument_values = [calculation_type, principal, interest, pay_periods, payment]
-            # Count number of user-supplied arguments
-            for arg in argument_values:
-                if not value_missing(arg):
-                    argc += 1
-
-            # Ensure numeric arguments are all positive
-            for arg in argument_values[1:]:
-                if not value_missing(arg) and arg < 0:
-                    return ERR_INCORRECT_PARAMETERS
-
-            # One value MUST be missing to calculate anything
-            existing_values = set()
-
-            for arg in argument_values:
-                existing_values.add(value_missing(arg))
-
-            if existing_values == {False}:
-                return ERR_INCORRECT_PARAMETERS
-
-            # Not enough parameters have been provided
-            if argc < 4:
-                return ERR_INCORRECT_PARAMETERS
-
-            if value_missing(interest):
-                return ERR_INCORRECT_PARAMETERS
-            else:
                 if calculation_type == 'annuity':
                     if value_missing(pay_periods):
                         return self.annuity_timeframe(principal, payment, interest)
@@ -87,7 +100,9 @@ class Calculator(object):
                     if not value_missing(principal) and not value_missing(pay_periods):
                         return self.differentiate_payment(principal, pay_periods, interest)
                     else:
-                        return ERR_INCORRECT_PARAMETERS
+                        raise ValueMissingError
+            except (MissingParameterError, NegativeValueError, ValueMissingError, TooManyValuesError):
+                return ERR_INCORRECT_PARAMETERS
         else:
             pass
 

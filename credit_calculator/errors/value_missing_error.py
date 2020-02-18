@@ -1,0 +1,2 @@
+class ValueMissingError(ValueError):
+    pass

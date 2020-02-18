@@ -1,0 +1,2 @@
+class TooManyValuesError(ValueError):
+    pass

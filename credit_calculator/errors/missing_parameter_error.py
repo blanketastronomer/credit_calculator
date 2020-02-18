@@ -1,0 +1,2 @@
+class MissingParameterError(ValueError):
+    pass
