@@ -77,6 +77,38 @@ parameters.  There are two (2) different ways to calculate your loan parameters:
 NOTE: You will need to know the interest rate of the loan in ALL cases.  Failure to provide the loan's interest rate will
 result in an error.  This calculator CANNOT calculate the interest rate of your loan.
 
+#### Interactive Mode
+
+If you don't provide any arguments to `credit_calc.py`, you'll end up in Interactive Mode.  In this mode, you'll be prompted
+for all values.
+
+##### Example calculation of timeframe
+
+So if you run this:
+
+```shell script
+python credit_calc.py
+```
+
+This is what a sample session will look like:
+
+```text
+Which type of debt would you like to calculate?
+'a' - Annuity
+'d' - Differentiate:
+> a
+What do you want to calculate?
+'n' - Timeframe to payoff
+'a' - Monthly payment
+'p' - Credit principal:
+> n
+Please enter the credit principal: 500000
+Please enter the monthly payment: 22000
+Please enter the credit interest rate: 7.8
+You need 2 years and 1 month to repay this credit!
+Overpayment = 50000
+```
+
 #### Annuity
 
 First we'll cover annuity payments, since that's the most common way people will use this application.  For annuity-based
