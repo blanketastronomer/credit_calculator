@@ -1,6 +1,8 @@
 from io import StringIO
 import pytest
 from credit_calculator.calculator import Calculator
+from tests.helpers.file_helper import text_from_file
+
 
 @pytest.fixture()
 def calculator():
@@ -51,3 +53,14 @@ def test_interactive_annuity_principal(monkeypatch, calculator):
     monkeypatch.setattr('sys.stdin', current_input)
 
     assert calculator.calculate([]) == "Your credit principal = 800019!\nOverpayment = 246621"
+
+
+def test_interactive_differentiate_payments(monkeypatch, calculator):
+    current_input = compatible_input('d', '1000000', '10', '10')
+
+    monkeypatch.setattr('sys.stdin', current_input)
+
+    expected_text = text_from_file('diff_example_1.txt', True)
+    actual_text = calculator.calculate([])
+
+    assert actual_text == expected_text

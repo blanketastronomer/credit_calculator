@@ -1,16 +1,7 @@
-from pathlib import Path
-
 import pytest
 
 from credit_calculator.calculator import Calculator
-
-
-def text_from_file(file_name: str, stripped: bool = False) -> str:
-    current_directory: Path = Path(__file__).parent
-    path: Path = current_directory / file_name
-
-    if stripped:
-        return path.read_text().strip()
+from tests.helpers.file_helper import text_from_file
 
 
 @pytest.fixture()
@@ -30,7 +21,7 @@ def test_differentiate_option(calculator):
     assert calculator.arguments.type == 'diff'
 
 
-def test_differentiate(calculator):
+def test_interactive_differentiate(calculator):
     args = [
         '--type', 'diff',
         '--principal', '1000000',
