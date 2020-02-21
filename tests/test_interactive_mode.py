@@ -43,3 +43,11 @@ def test_interative_annuity_payment(monkeypatch, calculator):
     monkeypatch.setattr('sys.stdin', current_input)
 
     assert calculator.calculate([]) == "Your annuity payment = 21248!\nOverpayment = 274880"
+
+
+def test_interactive_annuity_principal(monkeypatch, calculator):
+    current_input = compatible_input('a', 'p', '8722', '120', '5.6')
+
+    monkeypatch.setattr('sys.stdin', current_input)
+
+    assert calculator.calculate([]) == "Your credit principal = 800019!\nOverpayment = 246621"
