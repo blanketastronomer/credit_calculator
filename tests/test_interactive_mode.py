@@ -35,3 +35,11 @@ def test_interactive_annuity_timeframe_in_years_and_months(monkeypatch, calculat
     monkeypatch.setattr('sys.stdin', current_input)
 
     assert calculator.calculate([]) == "You need 2 years and 1 month to repay this credit!\nOverpayment = 50000"
+
+
+def test_interative_annuity_payment(monkeypatch, calculator):
+    current_input = compatible_input('a', 'a', '1000000', '60', '10')
+
+    monkeypatch.setattr('sys.stdin', current_input)
+
+    assert calculator.calculate([]) == "Your annuity payment = 21248!\nOverpayment = 274880"

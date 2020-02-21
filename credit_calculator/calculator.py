@@ -258,6 +258,12 @@ class Calculator(object):
                 interest = self.interest_prompt.float_prompt()
 
                 return self.annuity_timeframe(principal, payment, interest)
+            elif calc_prompt == 'a':
+                principal = self.principal_prompt.int_prompt()
+                timeframe = self.payment_prompt.int_prompt()
+                interest = self.interest_prompt.float_prompt()
+
+                return self.annuity_payment(principal, timeframe, interest)
 
         return parser_type
 
