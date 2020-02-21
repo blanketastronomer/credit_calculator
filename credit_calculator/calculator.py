@@ -4,11 +4,13 @@ from math import pow
 from typing import List
 
 from credit_calculator.argument_parser import ArgumentParser
+from credit_calculator.choice import Choice
 from credit_calculator.errors.missing_parameter_error import MissingParameterError
 from credit_calculator.errors.negative_parameter_error import NegativeValueError
 from credit_calculator.errors.too_many_values_error import TooManyValuesError
 from credit_calculator.errors.value_missing_error import ValueMissingError
 from credit_calculator.helpers.value_helper import value_missing
+from credit_calculator.prompt import Prompt
 
 ERR_INCORRECT_PARAMETERS = "Incorrect parameters"
 
@@ -20,6 +22,13 @@ class Calculator(object):
         """
         self.argument_parser = ArgumentParser()
         self.arguments = None
+        self.calc_prompt: Prompt = None
+
+        # Needed ONLY for interactive mode.
+        self.principal_prompt: Prompt = None
+        self.payment_prompt: Prompt = None
+        self.timeframe_prompt: Prompt = None
+        self.interest_prompt: Prompt = None
 
     def _interest_rate(self, rate: float) -> float:
         """
@@ -104,7 +113,7 @@ class Calculator(object):
             except (MissingParameterError, NegativeValueError, ValueMissingError, TooManyValuesError):
                 return ERR_INCORRECT_PARAMETERS
         else:
-            pass
+            return self.interactive_mode()
 
     def annuity_payment(self, principal: int, timeframe: int, interest_rate: float):
         """
@@ -230,3 +239,37 @@ class Calculator(object):
             output += f"\nOverpayment = {overpayment}"
 
         return output
+
+    def interactive_mode(self):
+        parser_type = Prompt(
+            "Which type of debt would you like to calculate?",
+            Choice('a', 'Annuity'),
+            Choice('d', 'Differentiate')
+        ).prompt()
+
+        self.load_interactive_prompts()
+
+        if parser_type == 'a':
+            calc_prompt = self.calc_prompt.prompt()
+
+            if calc_prompt == 'n':
+                principal = self.principal_prompt.int_prompt()
+                payment = self.payment_prompt.int_prompt()
+                interest = self.interest_prompt.float_prompt()
+
+                return self.annuity_timeframe(principal, payment, interest)
+
+        return parser_type
+
+    def load_interactive_prompts(self):
+        self.calc_prompt = Prompt(
+            "What do you want to calculate?",
+            Choice('n', 'Timeframe to payoff'),
+            Choice('a', 'Monthly payment'),
+            Choice('p', 'Credit principal')
+        )
+
+        self.principal_prompt = Prompt("Please enter the credit principal")
+        self.payment_prompt = Prompt("Please enter the monthly payment")
+        self.timeframe_prompt = Prompt("Please enter the number of pay cycles")
+        self.interest_prompt = Prompt("Please enter the credit interest rate")
